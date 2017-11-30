@@ -26,6 +26,14 @@ public class Player extends Person
 		this.numBuyouts = 0;
 	}
 	
+	public Player(String[] params)
+	{
+		this.playerID = Integer.valueOf(params[0]);
+		this.playerWindow = new PlayerWindow(this.playerID);
+		this.credit = Integer.valueOf(params[1]);
+		this.numBuyouts = Integer.valueOf(params[2]);
+	}
+	
 	public int getPlayerID()
 	{
 		return this.playerID;

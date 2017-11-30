@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class DealerPanel extends JPanel {
@@ -14,6 +15,8 @@ public class DealerPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private JButton saveStateButton;
 
 	public DealerPanel()
 	{
@@ -33,6 +36,7 @@ public class DealerPanel extends JPanel {
 		catch(IOException e)
 		{
 			System.out.println(e.getMessage());
+			System.exit(1);
 		}
 		this.setVisible(true);
 	}
