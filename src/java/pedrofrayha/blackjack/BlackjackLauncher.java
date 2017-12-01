@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -58,8 +59,8 @@ public class BlackjackLauncher {
 	private static void showInitialWindow()
 	{
 		initialFrame = new JFrame("Escolha o número de jogadores");
-		initialFrame.setSize(600, 250);
-		initialFrame.setLayout(new GridLayout(1, 1));
+		initialFrame.setSize(600, 80);
+		initialFrame.setLayout(new GridLayout(2, 1));
 
 		numberOfPlayersBox = new JComboBox<Integer>();
 		numberOfPlayersBox.addItem(1);
@@ -75,13 +76,20 @@ public class BlackjackLauncher {
 		okButton.setActionCommand("PlayerNumbersOK");
 		okButton.addActionListener(new ButtonClickListener());
 		
+		Box dummyBox = Box.createHorizontalBox();
+		dummyBox.add(numberOfPlayersLabel);
+		dummyBox.add(numberOfPlayersBox);
+		dummyBox.add(okButton);
+		
 		JButton loadSavedStateButton = new JButton("Carregar jogo anterior");
 		loadSavedStateButton.setActionCommand("LoadSavedStateCommand");
 		loadSavedStateButton.addActionListener(new ButtonClickListener());
 
-		initialFrame.add(numberOfPlayersLabel);
-		initialFrame.add(numberOfPlayersBox);
-		initialFrame.add(okButton);
+//		initialFrame.add(numberOfPlayersLabel);
+//		initialFrame.add(numberOfPlayersBox);
+//		initialFrame.add(okButton);
+		initialFrame.add(dummyBox);
+		initialFrame.add(loadSavedStateButton);
 
 		initialFrame.setVisible(true);
 
@@ -156,31 +164,45 @@ public class BlackjackLauncher {
 				}
 			}
 			Deck.getInstance().shuffleCards();
-			saveState();
+			//saveState();
 		}
 		dealer.showEndGameMessage();
 		
 	}
 	
-	private static void saveState()
+	public static void saveState() 
+			throws IOException
 	{
-		int tries = 0;
-		while(tries < 3)
+		JFileChooser fc = new JFileChooser();
+		int result = fc.showSaveDialog(dealer.getDealerFrame());
+		if(result == JFileChooser.APPROVE_OPTION)
 		{
-			FileWriter writer = null;
-			try
+			File file = fc.getSelectedFile();
+			int tries = 0;
+			boolean hasWritten = false;
+			while(tries < 3)
 			{
-				writer = new FileWriter(new File("./resources/saveState.csv"));
-				writer.write(players.size());
-				for(Player player: players)
+				FileWriter writer = null;
+				try
 				{
-					player.saveState(writer);
+					writer = new FileWriter(file);
+					writer.write(players.size() + "\n");
+					for(Player player: players)
+					{
+						player.saveState(writer);
+					}
+					hasWritten = true;
+					writer.close();
+					break;
 				}
-				writer.close();
+				catch(IOException e)
+				{
+					tries++;
+				}
 			}
-			catch(IOException e)
+			if(!hasWritten)
 			{
-				tries++;
+				throw new IOException("Tentou salvar estado três vezes e não conseguiu");
 			}
 		}
 	}
@@ -237,11 +259,13 @@ public class BlackjackLauncher {
 			if (command.equalsIgnoreCase("PlayerNumbersOK")) {
 				Integer numberOfPlayers = (Integer) numberOfPlayersBox.getSelectedItem();
 				initializePlayersAndDealer(numberOfPlayers);
+				initialFrame.dispose();
 				havePlayersBeenCreated = true;
 			}
 			else if(command.equalsIgnoreCase("LoadSavedStateCommand"))
 			{
 				loadSavedState();
+				initialFrame.dispose();
 				havePlayersBeenCreated = true;
 			}
 		}

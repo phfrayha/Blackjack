@@ -121,7 +121,7 @@ public class Player extends Person
 	public void saveState(Writer writer)
 	throws IOException
 	{
-		writer.write(this.playerID + ";" + this.credit + "\n");
+		writer.write(this.playerID + ";" + this.credit + ";" + this.numBuyouts + "\n");
 	}
 	
 }
