@@ -29,9 +29,7 @@ public class PlayerWindow extends JFrame {
 	
 	public void endPlayer()
 	{
-		if(JOptionPane.showConfirmDialog(this, "Você faliu! A janela irá ser fechada", "JOGADOR FALIU", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE) == JOptionPane.OK_OPTION)
-		{
-			this.dispose();
-		}
+		JOptionPane.showMessageDialog(this, "Você faliu! A janela será fechada", "JOGADOR FALIU", JOptionPane.INFORMATION_MESSAGE);
+		this.dispose();
 	}
 }

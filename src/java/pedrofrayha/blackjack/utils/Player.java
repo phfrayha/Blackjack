@@ -54,10 +54,10 @@ public class Player extends Person
 		this.credit += credit;
 	}
 	
-	public void executeBuyout()
+	public void executeBuyout(int value)
 	{
 		this.numBuyouts++;
-		this.credit = INITIAL_CREDIT / 2;
+		this.credit = value;
 	}
 	
 	public boolean hasSetBet()
@@ -83,28 +83,52 @@ public class Player extends Person
 	
 	public boolean isBroke()
 	{
-		boolean isBroke = this.credit == 0;
-		if(isBroke)
+		boolean isPlayerBroke = this.credit == 0;
+		if(isPlayerBroke)
 		{
 			if(this.numBuyouts < 2)
 			{
-				int ret = JOptionPane.showConfirmDialog(playerWindow, "Deseja executar a compra de creditos?", "VOLTAR AO JOGO", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-				if(ret == JOptionPane.YES_OPTION)
-				{
-					this.executeBuyout();
-					isBroke = false;
-				}
-				else
-				{
-					this.playerWindow.endPlayer();
-				}
+				isPlayerBroke = offerBuyout();
 			}
 			else
 			{
 				this.playerWindow.endPlayer();
 			}
 		}
-		return isBroke;
+		return isPlayerBroke;
+	}
+
+	private boolean offerBuyout() {
+		int ret = JOptionPane.showConfirmDialog(playerWindow, "Deseja executar a compra de creditos?", "VOLTAR AO JOGO", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if(ret == JOptionPane.YES_OPTION)
+		{
+			boolean isValidBuyout = false;
+			int value = Player.INITIAL_CREDIT / 2;
+			while(!isValidBuyout)
+			{
+				String rawInput = JOptionPane.showInputDialog(playerWindow, "Quantos créditos deseja comprar?", "COMPRA DE CRÉDITOS", JOptionPane.QUESTION_MESSAGE);
+				try
+				{
+					value = Integer.parseInt(rawInput);
+					isValidBuyout = value < (Player.INITIAL_CREDIT / 2);
+					if(!isValidBuyout)
+					{
+						JOptionPane.showMessageDialog(playerWindow, "Valor de recompra acima do limite de " + (Player.INITIAL_CREDIT / 2), "VALOR INVÁLIDO", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				catch(NumberFormatException e)
+				{
+					JOptionPane.showMessageDialog(playerWindow, "Formato inválido para créditos", "FORMATO INVÁLIDO", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+			this.executeBuyout(value);
+			return false;
+		}
+		else
+		{
+			this.playerWindow.endPlayer();
+		}
+		return true;
 	}
 	
 	public void bet(int bet)
