@@ -147,8 +147,10 @@ public class Card
 		{
 			number = 3;
 		}
-		
-		number = 2;
+		else
+		{
+			number = 2;
+		}
 		
 		return number;
 	}

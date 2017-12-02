@@ -17,7 +17,6 @@ public class Deck
 	
 	private Deck()
 	{
-		this.cards = new ArrayList<Card>(NUMBER_OF_CARDS);
 		this.shuffleCards();
 	}
 	
@@ -33,6 +32,8 @@ public class Deck
 	
 	public void shuffleCards()
 	{
+		this.cards = new ArrayList<Card>(NUMBER_OF_CARDS);
+		
 		for(int i=0; i<NUMBER_OF_CARDS;i++)
 		{
 			this.cards.add(null);

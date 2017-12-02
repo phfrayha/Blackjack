@@ -9,12 +9,15 @@ public class PlayerWindow extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private int id;
+	
 	PlayerPanel playerPanel;
 
 	public PlayerWindow(int id)
 	{
 		super("Jogador " + (id + 1));
-		this.setSize(850, 800);
+		this.id = id;
+		this.setSize(756, 600);
 		initializePlayerUI();
 		this.setVisible(true);
 		this.playerPanel.setVisible(true);
@@ -23,8 +26,23 @@ public class PlayerWindow extends JFrame {
 	
 	private void initializePlayerUI()
 	{
-		this.playerPanel = new PlayerPanel();
+		this.playerPanel = new PlayerPanel(this.id);
 		this.getContentPane().add(this.playerPanel);
+	}
+	
+	public void toPlayingState()
+	{
+		this.playerPanel.toPlayingState();
+	}
+	
+	public void toBettingState()
+	{
+		this.playerPanel.toBettingState();
+	}
+	
+	public void updateCredit(int credit)
+	{
+		this.playerPanel.updateCreditTextField(credit);
 	}
 	
 	public void endPlayer()

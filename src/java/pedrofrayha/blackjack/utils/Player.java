@@ -10,7 +10,7 @@ import pedrofrayha.blackjack.gui.PlayerWindow;
 public class Player extends Person
 {
 	private int playerID;
-	private static final int INITIAL_CREDIT = 1000;
+	public static final int INITIAL_CREDIT = 1000;
 	private PlayerWindow playerWindow;
 	private int credit;
 	private int betAmount;
@@ -65,14 +65,34 @@ public class Player extends Person
 		return this.hasBet;
 	}
 	
+	public void stand()
+	{
+		this.hasStood = true;
+	}
+	
+	public void requestCard()
+	{
+		Deck deck = Deck.getInstance();
+		this.hand.addCard(deck.drawCard());
+	}
+	
 	public int play()
 	{
 		this.hand = new Hand();
 		this.hasStood = false;
-		while(!this.hasStood && this.hand.getValue() < 22)
+		this.playerWindow.toPlayingState();
+		while(!this.hasStood && !this.hasBust())
 		{
-			//TODO: Implementar interface de hit/stand
+			try 
+			{
+				Thread.sleep(1000);
+			} 
+			catch (InterruptedException e) 
+			{
+				e.printStackTrace();
+			}
 		}
+		this.playerWindow.toBettingState();
 		return this.hand.getValue();
 	}
 	
@@ -96,6 +116,11 @@ public class Player extends Person
 			}
 		}
 		return isPlayerBroke;
+	}
+	
+	public void updateCredit()
+	{
+		this.playerWindow.updateCredit(this.credit);
 	}
 
 	private boolean offerBuyout() {
@@ -140,6 +165,13 @@ public class Player extends Person
 		}
 		this.credit -= bet;
 		hasBet = true;
+		this.betAmount = bet;
+	}
+	
+	public void resetStatus()
+	{
+		this.hasBet = false;
+		this.hasStood = false;
 	}
 	
 	public void saveState(Writer writer)

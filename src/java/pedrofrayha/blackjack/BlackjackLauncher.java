@@ -19,6 +19,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import pedrofrayha.blackjack.utils.Dealer;
 import pedrofrayha.blackjack.utils.Deck;
@@ -103,9 +104,7 @@ public class BlackjackLauncher {
 	private static boolean havePlayersBeenCreated = false;
 
 	public static void main(String[] args)
-	{
-//		BlackjackUI blackjackUI = new BlackjackUI();
-		
+	{		
 		showInitialWindow();
 		
 		while(!havePlayersBeenCreated);
@@ -133,8 +132,11 @@ public class BlackjackLauncher {
 			}
 			final int dealerValue = dealer.play();
 			final boolean dealerHasBlackJack = dealer.hasBlackJack();
+			final boolean hasDealerBust = dealer.hasBust();
+			
 			for(Player player: players)
 			{
+				final boolean hasPlayerBust = player.hasBust();
 				if(player.hasBlackJack())
 				{
 					if(dealerHasBlackJack)
@@ -148,26 +150,30 @@ public class BlackjackLauncher {
 						player.addCredit(payout);
 					}
 				}
-				else
+				else if(hasDealerBust)
 				{
-					if(!dealerHasBlackJack)
-					{
-						if(playerHandValues[player.getPlayerID()] > dealerValue)
-						{
-							player.addCredit(2 * player.getBetAmount());
-						}
-						else if (playerHandValues[player.getPlayerID()] == dealerValue)
-						{
-							player.addCredit(player.getBetAmount());
-						}
-					}
+					player.addCredit(2 * player.getBetAmount());
 				}
+				else if(!dealerHasBlackJack)
+				{
+						if(!hasPlayerBust)
+						{
+							if(playerHandValues[player.getPlayerID()] > dealerValue)
+							{
+								player.addCredit(2 * player.getBetAmount());
+							}
+							else if (playerHandValues[player.getPlayerID()] == dealerValue)
+							{
+								player.addCredit(player.getBetAmount());
+							}
+						}
+				}
+				player.resetStatus();
+				player.updateCredit();
 			}
 			Deck.getInstance().shuffleCards();
-			//saveState();
 		}
 		dealer.showEndGameMessage();
-		
 	}
 	
 	public static void saveState() 
@@ -205,6 +211,7 @@ public class BlackjackLauncher {
 				throw new IOException("Tentou salvar estado três vezes e não conseguiu");
 			}
 		}
+		JOptionPane.showMessageDialog(dealer.getDealerFrame(), "Jogo salvo com sucesso!", "JOGO SALVO", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	private static void initializePlayersAndDealer(int numberOfPlayers)
@@ -250,6 +257,19 @@ public class BlackjackLauncher {
 				System.exit(1);
 			}
 		}
+	}
+	
+	public static Player getPlayerById(int id)
+	{
+		for(Player player: players)
+		{
+			if(player.getPlayerID() == id)
+			{
+				return player;
+			}
+		}
+		
+		return null;
 	}
 	
 	private static class ButtonClickListener implements ActionListener {

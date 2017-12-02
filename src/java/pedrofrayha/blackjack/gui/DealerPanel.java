@@ -35,7 +35,7 @@ public class DealerPanel extends JPanel {
 		this.endGameButton.setActionCommand("EndGameCommand");
 		this.endGameButton.addActionListener(new DealerButtonClickListener());
 		
-		Box dummyBox = Box.createHorizontalBox();
+		Box dummyBox = Box.createVerticalBox();
 		dummyBox.add(saveStateButton);
 		dummyBox.add(endGameButton);
 		

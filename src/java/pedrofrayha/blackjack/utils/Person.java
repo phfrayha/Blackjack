@@ -7,4 +7,9 @@ public class Person {
 	{
 		return this.hand.isBlackJack();
 	}
+	
+	public boolean hasBust()
+	{
+		return this.hand.getValue() > 21;
+	}
 }

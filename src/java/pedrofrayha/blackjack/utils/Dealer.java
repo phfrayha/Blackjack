@@ -8,7 +8,6 @@ public class Dealer extends Person{
 	private static Dealer dealerSingleton = null;
 	
 	private DealerWindow dealerWindow;
-	private Hand dealerHand;
 	
 	private Dealer()
 	{
@@ -17,13 +16,13 @@ public class Dealer extends Person{
 	
 	public int play()
 	{
-		dealerHand = new Hand();
+		hand = new Hand();
 		Deck deck = Deck.getInstance();
-		if(dealerHand.getValue() < 17)
+		while(hand.getValue() < 17)
 		{
-			dealerHand.addCard(deck.drawCard());
+			hand.addCard(deck.drawCard());
 		}
-		return dealerHand.getValue();
+		return hand.getValue();
 	}
 	
 	public static Dealer getInstance()
