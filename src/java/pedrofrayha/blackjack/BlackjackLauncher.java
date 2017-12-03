@@ -47,14 +47,15 @@ public class BlackjackLauncher {
 	
 	private static boolean areAllPlayersBroke()
 	{
+		boolean areAllPlayersBroke = true;
 		for(Player player:players)
 		{
 			if(!player.isBroke())
 			{
-				return false;
+				areAllPlayersBroke = false;
 			}
 		}
-		return true;
+		return areAllPlayersBroke;
 	}
 	
 	private static void showInitialWindow()
@@ -247,7 +248,10 @@ public class BlackjackLauncher {
 				for(int i=0;i<numPlayers; i++)
 				{
 					String[] param = reader.readLine().split(";");
-					playersHolder.add(new Player(param));
+					if(!"0".equalsIgnoreCase(param[1]))
+					{
+						playersHolder.add(new Player(param));
+					}
 				}
 				initializePlayersAndDealer(playersHolder);
 			}

@@ -32,6 +32,7 @@ public class Player extends Person
 		this.playerWindow = new PlayerWindow(this.playerID);
 		this.credit = Integer.valueOf(params[1]);
 		this.numBuyouts = Integer.valueOf(params[2]);
+		this.updateCredit();
 	}
 	
 	public int getPlayerID()
@@ -58,6 +59,7 @@ public class Player extends Person
 	{
 		this.numBuyouts++;
 		this.credit = value;
+		this.updateCredit();
 	}
 	
 	public boolean hasSetBet()
