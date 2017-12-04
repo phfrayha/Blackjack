@@ -40,6 +40,11 @@ public class PlayerWindow extends JFrame {
 		this.playerPanel.toBettingState();
 	}
 	
+	public void toWaitingState()
+	{
+		this.playerPanel.toWaitingState();
+	}
+	
 	public void updateCredit(int credit)
 	{
 		this.playerPanel.updateCreditTextField(credit);

@@ -94,7 +94,7 @@ public class Player extends Person
 				e.printStackTrace();
 			}
 		}
-		this.playerWindow.toBettingState();
+		this.playerWindow.toWaitingState();
 		return this.hand.getValue();
 	}
 	
@@ -137,7 +137,7 @@ public class Player extends Person
 				try
 				{
 					value = Integer.parseInt(rawInput);
-					isValidBuyout = value < (Player.INITIAL_CREDIT / 2);
+					isValidBuyout = value <= (Player.INITIAL_CREDIT / 2);
 					if(!isValidBuyout)
 					{
 						JOptionPane.showMessageDialog(playerWindow, "Valor de recompra acima do limite de " + (Player.INITIAL_CREDIT / 2), "VALOR INVÁLIDO", JOptionPane.ERROR_MESSAGE);
@@ -168,12 +168,14 @@ public class Player extends Person
 		this.credit -= bet;
 		hasBet = true;
 		this.betAmount = bet;
+		this.playerWindow.toWaitingState();
 	}
 	
 	public void resetStatus()
 	{
 		this.hasBet = false;
 		this.hasStood = false;
+		this.playerWindow.toBettingState();
 	}
 	
 	public void saveState(Writer writer)

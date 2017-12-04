@@ -48,13 +48,19 @@ public class BlackjackLauncher {
 	private static boolean areAllPlayersBroke()
 	{
 		boolean areAllPlayersBroke = true;
+		List<Player> playersToEliminate = new ArrayList<Player>();
 		for(Player player:players)
 		{
 			if(!player.isBroke())
 			{
 				areAllPlayersBroke = false;
 			}
+			else
+			{
+				playersToEliminate.add(player);
+			}
 		}
+		players.removeAll(playersToEliminate);
 		return areAllPlayersBroke;
 	}
 	
@@ -107,9 +113,19 @@ public class BlackjackLauncher {
 	public static void main(String[] args)
 	{		
 		showInitialWindow();
-		
-		while(!havePlayersBeenCreated);
-		
+				
+		while(!havePlayersBeenCreated)
+		{
+			try 
+			{
+				Thread.sleep(1000);
+			} 
+			catch (InterruptedException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+				
 		while(!areAllPlayersBroke())
 		{
 			while(!haveAllPlayersBet())

@@ -168,6 +168,7 @@ public class PlayerPanel extends JPanel {
 	public void toPlayingState()
 	{
 		this.betButton.setEnabled(false);
+		this.resetBetButton.setEnabled(false);
 		this.hitButton.setEnabled(true);
 		this.standButton.setEnabled(true);
 	}
@@ -175,9 +176,18 @@ public class PlayerPanel extends JPanel {
 	public void toBettingState()
 	{
 		this.betButton.setEnabled(true);
+		this.resetBetButton.setEnabled(true);
 		this.hitButton.setEnabled(false);
 		this.standButton.setEnabled(false);
 		this.resetBetAmount();
+	}
+	
+	public void toWaitingState()
+	{
+		this.betButton.setEnabled(false);
+		this.resetBetButton.setEnabled(false);
+		this.hitButton.setEnabled(false);
+		this.standButton.setEnabled(false);
 	}
 
 	public void updateCreditTextField(int currentCredit)
