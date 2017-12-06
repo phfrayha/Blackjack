@@ -1,6 +1,6 @@
 package pedrofrayha.blackjack.utils;
 
-public class Card 
+public class Card implements Comparable<Card>
 {
 	public enum CardValue
 	{
@@ -153,6 +153,28 @@ public class Card
 		}
 		
 		return number;
+	}
+	
+	@Override
+	public boolean equals(final Object o)
+	{
+		return compareTo((Card) o) == 0;
+	}
+
+	@Override
+	public int compareTo(Card o) {
+		final int isSameValue = this.value.compareTo(o.value);
+		if(isSameValue == 0)
+		{
+			return this.suit.compareTo(o.suit);
+		}
+		return isSameValue;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return this.toString().hashCode();
 	}
 	
 }

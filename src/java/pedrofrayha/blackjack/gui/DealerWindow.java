@@ -17,6 +17,7 @@ public class DealerWindow extends JFrame {
 		this.setSize(850, 800);
 		initializeDealerUI();
 		this.setVisible(true);
+		this.setResizable(false);
 		this.dealerPanel.setVisible(true);
 	}
 	

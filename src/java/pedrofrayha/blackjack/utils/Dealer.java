@@ -14,9 +14,18 @@ public class Dealer extends Person{
 		this.dealerWindow = new DealerWindow();
 	}
 	
+	public void setUpDealer()
+	{
+		this.hand = new Hand();
+	}
+	
+	public Card getPreviewCard()
+	{
+		return this.hand.getFirstCard();
+	}
+	
 	public int play()
 	{
-		hand = new Hand();
 		Deck deck = Deck.getInstance();
 		while(hand.getValue() < 17)
 		{
@@ -42,5 +51,6 @@ public class Dealer extends Person{
 	public void showEndGameMessage()
 	{
 		JOptionPane.showMessageDialog(dealerWindow, "Todos os jogadores estão sem dinheiro!", "FIM DE JOGO", JOptionPane.INFORMATION_MESSAGE);
+		System.exit(0);
 	}
 }

@@ -1,7 +1,11 @@
 package pedrofrayha.blackjack.gui;
 
+import java.util.List;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+import pedrofrayha.blackjack.utils.Card;
 
 public class PlayerWindow extends JFrame {
 	/**
@@ -20,6 +24,7 @@ public class PlayerWindow extends JFrame {
 		this.setSize(756, 600);
 		initializePlayerUI();
 		this.setVisible(true);
+		this.setResizable(false);
 		this.playerPanel.setVisible(true);
 		
 	}
@@ -30,9 +35,9 @@ public class PlayerWindow extends JFrame {
 		this.getContentPane().add(this.playerPanel);
 	}
 	
-	public void toPlayingState()
+	public void toPlayingState(List<Card> cards) 
 	{
-		this.playerPanel.toPlayingState();
+		this.playerPanel.toPlayingState(cards);
 	}
 	
 	public void toBettingState()
@@ -40,9 +45,14 @@ public class PlayerWindow extends JFrame {
 		this.playerPanel.toBettingState();
 	}
 	
-	public void toWaitingState()
+	public void refresh()
 	{
-		this.playerPanel.toWaitingState();
+		this.playerPanel.refresh();
+	}
+	
+	public void toWaitingState(boolean showDealerPreview)
+	{
+		this.playerPanel.toWaitingState(showDealerPreview);
 	}
 	
 	public void updateCredit(int credit)

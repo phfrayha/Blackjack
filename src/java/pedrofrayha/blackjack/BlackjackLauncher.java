@@ -109,6 +109,14 @@ public class BlackjackLauncher {
 	}
 	
 	private static boolean havePlayersBeenCreated = false;
+	
+	private static void refreshUI()
+	{
+		for(Player player : players)
+		{
+			player.getPlayerWindow().refresh();
+		}
+	}
 
 	public static void main(String[] args)
 	{		
@@ -128,6 +136,7 @@ public class BlackjackLauncher {
 				
 		while(!areAllPlayersBroke())
 		{
+			dealer.setUpDealer();
 			while(!haveAllPlayersBet())
 			{
 				try
@@ -148,6 +157,7 @@ public class BlackjackLauncher {
 				counter++;
 			}
 			final int dealerValue = dealer.play();
+			refreshUI();
 			final boolean dealerHasBlackJack = dealer.hasBlackJack();
 			final boolean hasDealerBust = dealer.hasBust();
 			

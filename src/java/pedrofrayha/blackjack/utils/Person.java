@@ -12,4 +12,9 @@ public class Person {
 	{
 		return this.hand.getValue() > 21;
 	}
+	
+	public Hand getHand()
+	{
+		return this.hand;
+	}
 }

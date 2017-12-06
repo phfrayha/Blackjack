@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -20,6 +21,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import pedrofrayha.blackjack.actions.PlayerButtonClickListener;
+import pedrofrayha.blackjack.gui.utils.CardToImageConverter;
+import pedrofrayha.blackjack.utils.Card;
+import pedrofrayha.blackjack.utils.Dealer;
 import pedrofrayha.blackjack.utils.Player;
 
 public class PlayerPanel extends JPanel {
@@ -29,8 +33,16 @@ public class PlayerPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private static final int BASE_X_POSITION = 0;
-	private static final int BASE_Y_POSITION = 460;
+	private static final int CHIP_BASE_X_POSITION = 0;
+	private static final int CHIP_BASE_Y_POSITION = 460;
+	
+	private static final int PLAYER_CARD_BASE_X_POSITION = 300;
+	private static final int PLAYER_CARD_BASE_Y_POSITION = 400;
+	
+	private boolean isPreview;
+	
+	private static final int DEALER_CARD_BASE_X_POSITION = 300;
+	private static final int DEALER_CARD_BASE_Y_POSITION = 200;
 	
 	private int id;
 	
@@ -41,9 +53,15 @@ public class PlayerPanel extends JPanel {
 	private JButton standButton;
 	private JTextField currentCreditField;
 	
+	private List<Card> playerCards;
+	
 	public PlayerPanel(int id)
 	{
 		super();
+		
+		this.isPreview = true;
+		
+		playerCards = null;
 		
 		this.id = id;
 		
@@ -132,22 +150,65 @@ public class PlayerPanel extends JPanel {
 			g.drawImage(background, 0, 0, null);
 			
 			Image chip1 = ImageIO.read(new File("./Imagens/ficha 1$.png"));
-			g.drawImage(chip1, BASE_X_POSITION, BASE_Y_POSITION, null);
+			g.drawImage(chip1, CHIP_BASE_X_POSITION, CHIP_BASE_Y_POSITION, null);
 			
 			Image chip5 = ImageIO.read(new File("./Imagens/ficha 5$.png"));
-			g.drawImage(chip5, BASE_X_POSITION + 60, BASE_Y_POSITION, null);
+			g.drawImage(chip5, CHIP_BASE_X_POSITION + 60, CHIP_BASE_Y_POSITION, null);
 
 			Image chip10 = ImageIO.read(new File("./Imagens/ficha 10$.png"));
-			g.drawImage(chip10, BASE_X_POSITION + 120, BASE_Y_POSITION, null);
+			g.drawImage(chip10, CHIP_BASE_X_POSITION + 120, CHIP_BASE_Y_POSITION, null);
 			
 			Image chip20 = ImageIO.read(new File("./Imagens/ficha 20$.png"));
-			g.drawImage(chip20, BASE_X_POSITION, BASE_Y_POSITION + 60, null);
+			g.drawImage(chip20, CHIP_BASE_X_POSITION, CHIP_BASE_Y_POSITION + 60, null);
 			
 			Image chip50 = ImageIO.read(new File("./Imagens/ficha 50$.png"));
-			g.drawImage(chip50, BASE_X_POSITION + 60, BASE_Y_POSITION + 60, null);
+			g.drawImage(chip50, CHIP_BASE_X_POSITION + 60, CHIP_BASE_Y_POSITION + 60, null);
 			
 			Image chip100 = ImageIO.read(new File("./Imagens/ficha 100$.png"));
-			g.drawImage(chip100, BASE_X_POSITION + 120, BASE_Y_POSITION + 60, null);
+			g.drawImage(chip100, CHIP_BASE_X_POSITION + 120, CHIP_BASE_Y_POSITION + 60, null);
+			
+			if(isPreview)
+			{
+				Image previewImage = ImageIO.read(new File("./Imagens/deck1.gif"));
+				g.drawImage(previewImage, DEALER_CARD_BASE_X_POSITION, DEALER_CARD_BASE_Y_POSITION, null);
+				
+				Dealer dealer = Dealer.getInstance();
+				String imagePath;
+				if(dealer.getHand() != null)
+				{
+					final Card card = Dealer.getInstance().getPreviewCard();
+					imagePath = CardToImageConverter.convertToImagePath(card);
+					Image cardImage = ImageIO.read(new File(imagePath));
+					g.drawImage(cardImage, DEALER_CARD_BASE_X_POSITION + 30, DEALER_CARD_BASE_Y_POSITION, null);
+				}
+				else
+				{
+					g.drawImage(previewImage, DEALER_CARD_BASE_X_POSITION + 30, DEALER_CARD_BASE_Y_POSITION, null);
+				}
+			}
+			else
+			{
+				int rightShift = 0;
+				for(Card card: Dealer.getInstance().getHand().getCards())
+				{
+					final String imagePath = CardToImageConverter.convertToImagePath(card);
+					Image cardImage = ImageIO.read(new File(imagePath));
+					g.drawImage(cardImage, DEALER_CARD_BASE_X_POSITION + rightShift, DEALER_CARD_BASE_Y_POSITION, null);
+					rightShift += 30;
+				}
+			}
+			
+			if(playerCards != null)
+			{
+				int rightShift = 0;
+				for(Card card: playerCards)
+				{
+					final String imagePath = CardToImageConverter.convertToImagePath(card);
+					Image cardImage = ImageIO.read(new File(imagePath));
+					g.drawImage(cardImage, PLAYER_CARD_BASE_X_POSITION + rightShift, PLAYER_CARD_BASE_Y_POSITION, null);
+					rightShift += 30;
+				}
+			}
 			
 		}
 		catch(IOException e)
@@ -165,12 +226,19 @@ public class PlayerPanel extends JPanel {
 		this.currentBetAmountField.setText(Integer.toString(currentBetAmount));
 	}
 	
-	public void toPlayingState()
+	public void toPlayingState(List<Card> cards)
 	{
 		this.betButton.setEnabled(false);
 		this.resetBetButton.setEnabled(false);
 		this.hitButton.setEnabled(true);
 		this.standButton.setEnabled(true);
+		this.playerCards = cards;
+		this.repaint();
+	}
+	
+	public void refresh()
+	{
+		this.repaint();
 	}
 	
 	public void toBettingState()
@@ -180,14 +248,19 @@ public class PlayerPanel extends JPanel {
 		this.hitButton.setEnabled(false);
 		this.standButton.setEnabled(false);
 		this.resetBetAmount();
+		this.playerCards = null;
+		this.isPreview = true;
+		this.repaint();
 	}
 	
-	public void toWaitingState()
+	public void toWaitingState(boolean dealerHandPreview)
 	{
 		this.betButton.setEnabled(false);
 		this.resetBetButton.setEnabled(false);
 		this.hitButton.setEnabled(false);
 		this.standButton.setEnabled(false);
+		this.isPreview = dealerHandPreview;
+		this.repaint();
 	}
 
 	public void updateCreditTextField(int currentCredit)
@@ -213,35 +286,35 @@ public class PlayerPanel extends JPanel {
 				int clickX = p.x;
 				int clickY = p.y;
 				
-				if((BASE_X_POSITION <= clickX) && (clickX < BASE_X_POSITION + 60))
+				if((CHIP_BASE_X_POSITION <= clickX) && (clickX < CHIP_BASE_X_POSITION + 60))
 				{
-					if((BASE_Y_POSITION <= clickY) && (clickY < BASE_Y_POSITION + 60))
+					if((CHIP_BASE_Y_POSITION <= clickY) && (clickY < CHIP_BASE_Y_POSITION + 60))
 					{
 						valueToAdd = 1;
 					}
-					else if((BASE_Y_POSITION + 60 <= clickY) && (clickY <= BASE_Y_POSITION + 120))
+					else if((CHIP_BASE_Y_POSITION + 60 <= clickY) && (clickY <= CHIP_BASE_Y_POSITION + 120))
 					{
 						valueToAdd = 20;
 					}
 				}
-				else if((BASE_X_POSITION + 60 <= clickX) && (clickX < BASE_X_POSITION + 120))
+				else if((CHIP_BASE_X_POSITION + 60 <= clickX) && (clickX < CHIP_BASE_X_POSITION + 120))
 				{
-					if((BASE_Y_POSITION <= clickY) && (clickY < BASE_Y_POSITION + 60))
+					if((CHIP_BASE_Y_POSITION <= clickY) && (clickY < CHIP_BASE_Y_POSITION + 60))
 					{
 						valueToAdd = 5;
 					}
-					else if((BASE_Y_POSITION + 60 <= clickY) && (clickY <= BASE_Y_POSITION + 120))
+					else if((CHIP_BASE_Y_POSITION + 60 <= clickY) && (clickY <= CHIP_BASE_Y_POSITION + 120))
 					{
 						valueToAdd = 50;
 					}
 				}
-				else if((BASE_X_POSITION + 120 <= clickX) && (clickX < BASE_X_POSITION + 180))
+				else if((CHIP_BASE_X_POSITION + 120 <= clickX) && (clickX < CHIP_BASE_X_POSITION + 180))
 				{
-					if((BASE_Y_POSITION <= clickY) && (clickY < BASE_Y_POSITION + 60))
+					if((CHIP_BASE_Y_POSITION <= clickY) && (clickY < CHIP_BASE_Y_POSITION + 60))
 					{
 						valueToAdd = 10;
 					}
-					else if((BASE_Y_POSITION + 60 <= clickY) && (clickY <= BASE_Y_POSITION + 120))
+					else if((CHIP_BASE_Y_POSITION + 60 <= clickY) && (clickY <= CHIP_BASE_Y_POSITION + 120))
 					{
 						valueToAdd = 100;
 					}

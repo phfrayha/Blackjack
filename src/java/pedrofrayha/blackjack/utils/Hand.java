@@ -15,6 +15,16 @@ public class Hand {
 		addCard(deck.drawCard());
 	}
 	
+	public List<Card> getCards()
+	{
+		return this.hand;
+	}
+	
+	public Card getFirstCard()
+	{
+		return this.hand.get(0);
+	}
+	
 	public void addCard(Card card)
 	{
 		this.hand.add(card);

@@ -45,7 +45,7 @@ public class Player extends Person
 		return this.betAmount;
 	}
 	
-	public PlayerWindow getPlayerFrame()
+	public PlayerWindow getPlayerWindow()
 	{
 		return this.playerWindow;
 	}
@@ -75,14 +75,16 @@ public class Player extends Person
 	public void requestCard()
 	{
 		Deck deck = Deck.getInstance();
-		this.hand.addCard(deck.drawCard());
+		Card card = deck.drawCard();
+		this.hand.addCard(card);
+		this.playerWindow.refresh();
 	}
 	
 	public int play()
 	{
 		this.hand = new Hand();
 		this.hasStood = false;
-		this.playerWindow.toPlayingState();
+		this.playerWindow.toPlayingState(this.hand.getCards());
 		while(!this.hasStood && !this.hasBust())
 		{
 			try 
@@ -94,7 +96,7 @@ public class Player extends Person
 				e.printStackTrace();
 			}
 		}
-		this.playerWindow.toWaitingState();
+		this.playerWindow.toWaitingState(false);
 		return this.hand.getValue();
 	}
 	
@@ -168,7 +170,7 @@ public class Player extends Person
 		this.credit -= bet;
 		hasBet = true;
 		this.betAmount = bet;
-		this.playerWindow.toWaitingState();
+		this.playerWindow.toWaitingState(true);
 	}
 	
 	public void resetStatus()
