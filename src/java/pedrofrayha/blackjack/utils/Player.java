@@ -84,7 +84,7 @@ public class Player extends Person
 	{
 		this.hand = new Hand();
 		this.hasStood = false;
-		this.playerWindow.toPlayingState(this.hand.getCards());
+		this.playerWindow.toPlayingState(this.hand);
 		while(!this.hasStood && !this.hasBust())
 		{
 			try 
@@ -127,7 +127,8 @@ public class Player extends Person
 		this.playerWindow.updateCredit(this.credit);
 	}
 
-	private boolean offerBuyout() {
+	private boolean offerBuyout() 
+	{
 		int ret = JOptionPane.showConfirmDialog(playerWindow, "Deseja executar a compra de creditos?", "VOLTAR AO JOGO", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if(ret == JOptionPane.YES_OPTION)
 		{

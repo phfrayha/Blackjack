@@ -43,9 +43,22 @@ public class Hand {
 	public int getValue()
 	{
 		this.value = 0;
+		int numAces = 0;
 		for(Card card:hand)
 		{
+			if(card.isAce())
+			{
+				numAces++;
+			}
 			this.value+=card.getNumberValue();
+		}
+		if(numAces > 0)
+		{
+			while(this.value > 21 && numAces > 0)
+			{
+				this.value -= 10;
+				numAces--;
+			}
 		}
 		return value;
 	}

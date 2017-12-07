@@ -10,7 +10,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -24,6 +23,7 @@ import pedrofrayha.blackjack.actions.PlayerButtonClickListener;
 import pedrofrayha.blackjack.gui.utils.CardToImageConverter;
 import pedrofrayha.blackjack.utils.Card;
 import pedrofrayha.blackjack.utils.Dealer;
+import pedrofrayha.blackjack.utils.Hand;
 import pedrofrayha.blackjack.utils.Player;
 
 public class PlayerPanel extends JPanel {
@@ -52,8 +52,12 @@ public class PlayerPanel extends JPanel {
 	private JButton hitButton;
 	private JButton standButton;
 	private JTextField currentCreditField;
+//	private Box currentDealerScoreBox;
+//	private JTextField currentDealerScoreField;
+	private Box currentPlayerScoreBox;
+	private JTextField currentPlayerScoreField;
 	
-	private List<Card> playerCards;
+	private Hand playerCards;
 	
 	public PlayerPanel(int id)
 	{
@@ -120,12 +124,25 @@ public class PlayerPanel extends JPanel {
 		creditPanel.add(currentCreditLabel);
 		creditPanel.add(currentCreditField);
 		
+		this.currentPlayerScoreField = new JTextField(10);
+		this.currentPlayerScoreField.setEditable(false);
+		JLabel currentPlayerScoreLabel = new JLabel("Valor da mão: ");
+		
+		this.currentPlayerScoreBox = Box.createHorizontalBox();
+		this.currentPlayerScoreBox.add(currentPlayerScoreLabel);
+		this.currentPlayerScoreBox.add(currentPlayerScoreField);
+		this.currentPlayerScoreBox.setBorder(BorderFactory.createLineBorder(Color.black));
+		this.currentPlayerScoreBox.setVisible(false);
+		
 		JPanel dummyPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		dummyPanel.add(playPanel);
 		dummyPanel.add(betPanel);
 		dummyPanel.add(creditPanel);
 		
 		this.add(dummyPanel);
+		
+		this.add(this.currentPlayerScoreBox);
+		this.currentPlayerScoreBox.setBounds(PLAYER_CARD_BASE_X_POSITION, PLAYER_CARD_BASE_Y_POSITION + 80, 100, 40);
 		
 		repaint();
 	}
@@ -174,17 +191,22 @@ public class PlayerPanel extends JPanel {
 				
 				Dealer dealer = Dealer.getInstance();
 				String imagePath;
-				if(dealer.getHand() != null)
+				while(dealer.getHand() == null)
 				{
-					final Card card = Dealer.getInstance().getPreviewCard();
-					imagePath = CardToImageConverter.convertToImagePath(card);
-					Image cardImage = ImageIO.read(new File(imagePath));
-					g.drawImage(cardImage, DEALER_CARD_BASE_X_POSITION + 30, DEALER_CARD_BASE_Y_POSITION, null);
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						System.out.println(e.getMessage());
+						System.exit(1);
+					}
 				}
-				else
-				{
-					g.drawImage(previewImage, DEALER_CARD_BASE_X_POSITION + 30, DEALER_CARD_BASE_Y_POSITION, null);
-				}
+				
+				final Card card = Dealer.getInstance().getPreviewCard();
+				imagePath = CardToImageConverter.convertToImagePath(card);
+				Image cardImage = ImageIO.read(new File(imagePath));
+				g.drawImage(cardImage, DEALER_CARD_BASE_X_POSITION + 30, DEALER_CARD_BASE_Y_POSITION, null);
+			
+				
 			}
 			else
 			{
@@ -201,13 +223,15 @@ public class PlayerPanel extends JPanel {
 			if(playerCards != null)
 			{
 				int rightShift = 0;
-				for(Card card: playerCards)
+				for(Card card: playerCards.getCards())
 				{
 					final String imagePath = CardToImageConverter.convertToImagePath(card);
 					Image cardImage = ImageIO.read(new File(imagePath));
 					g.drawImage(cardImage, PLAYER_CARD_BASE_X_POSITION + rightShift, PLAYER_CARD_BASE_Y_POSITION, null);
 					rightShift += 30;
 				}
+				this.currentPlayerScoreBox.setVisible(true);
+				this.currentPlayerScoreField.setText(Integer.toString(playerCards.getValue()));
 			}
 			
 		}
@@ -226,7 +250,7 @@ public class PlayerPanel extends JPanel {
 		this.currentBetAmountField.setText(Integer.toString(currentBetAmount));
 	}
 	
-	public void toPlayingState(List<Card> cards)
+	public void toPlayingState(Hand cards)
 	{
 		this.betButton.setEnabled(false);
 		this.resetBetButton.setEnabled(false);
@@ -250,6 +274,7 @@ public class PlayerPanel extends JPanel {
 		this.resetBetAmount();
 		this.playerCards = null;
 		this.isPreview = true;
+		this.currentPlayerScoreBox.setVisible(false);
 		this.repaint();
 	}
 	

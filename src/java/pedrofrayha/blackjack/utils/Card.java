@@ -108,6 +108,11 @@ public class Card implements Comparable<Card>
 		return this.value;
 	}
 	
+	public boolean isAce()
+	{
+		return this.value.equals(Value.AS);
+	}
+	
 	public int getNumberValue()
 	{
 		int number;

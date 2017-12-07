@@ -1,11 +1,9 @@
 package pedrofrayha.blackjack.gui;
 
-import java.util.List;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import pedrofrayha.blackjack.utils.Card;
+import pedrofrayha.blackjack.utils.Hand;
 
 public class PlayerWindow extends JFrame {
 	/**
@@ -35,7 +33,7 @@ public class PlayerWindow extends JFrame {
 		this.getContentPane().add(this.playerPanel);
 	}
 	
-	public void toPlayingState(List<Card> cards) 
+	public void toPlayingState(Hand cards) 
 	{
 		this.playerPanel.toPlayingState(cards);
 	}
