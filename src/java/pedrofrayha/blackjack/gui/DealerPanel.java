@@ -122,6 +122,7 @@ public class DealerPanel extends JPanel {
 					g.drawImage(cardImage, DEFAULT_CARD_X_POSITION + rightShift, DEFAULT_CARD_Y_POSITION, null);
 					rightShift+=30;
 				}
+				g.drawString("Pontuação da banca: " + this.dealerHand.getValue(), DEFAULT_CARD_X_POSITION - 30, DEFAULT_CARD_Y_POSITION + 120);
 			}
 		}
 		catch(IOException e)
