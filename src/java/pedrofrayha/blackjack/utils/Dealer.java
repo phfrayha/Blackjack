@@ -3,16 +3,16 @@ package pedrofrayha.blackjack.utils;
 import javax.swing.JOptionPane;
 
 import pedrofrayha.blackjack.BlackjackLauncher;
-import pedrofrayha.blackjack.gui.DealerWindow;
+import pedrofrayha.blackjack.gui.DealerPanel;
 
 public class Dealer extends Person{
 	private static Dealer dealerSingleton = null;
 	
-	private DealerWindow dealerWindow;
+	private DealerPanel dealerWindow;
 	
 	private Dealer()
 	{
-		this.dealerWindow = new DealerWindow();
+		this.dealerWindow = new DealerPanel();
 	}
 	
 	public void enableStartNewRound()
@@ -62,7 +62,7 @@ public class Dealer extends Person{
 		return dealerSingleton;
 	}
 	
-	public DealerWindow getDealerFrame() 
+	public DealerPanel getDealerFrame() 
 	{
 		return this.dealerWindow;
 	}

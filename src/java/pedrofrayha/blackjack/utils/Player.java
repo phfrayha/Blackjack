@@ -5,13 +5,13 @@ import java.io.Writer;
 
 import javax.swing.JOptionPane;
 
-import pedrofrayha.blackjack.gui.PlayerWindow;
+import pedrofrayha.blackjack.gui.PlayerPanel;
 
 public class Player extends Person
 {
 	private int playerID;
 	public static final int INITIAL_CREDIT = 1000;
-	private PlayerWindow playerWindow;
+	private PlayerPanel playerWindow;
 	private int credit;
 	private int betAmount;
 	private boolean hasBet;
@@ -21,7 +21,7 @@ public class Player extends Person
 	public Player(int id)
 	{
 		this.credit = INITIAL_CREDIT;
-		this.playerWindow = new PlayerWindow(id);
+		this.playerWindow = new PlayerPanel(id);
 		this.playerID = id;
 		this.numBuyouts = 0;
 	}
@@ -29,7 +29,7 @@ public class Player extends Person
 	public Player(String[] params)
 	{
 		this.playerID = Integer.valueOf(params[0]);
-		this.playerWindow = new PlayerWindow(this.playerID);
+		this.playerWindow = new PlayerPanel(this.playerID);
 		this.credit = Integer.valueOf(params[1]);
 		this.numBuyouts = Integer.valueOf(params[2]);
 		this.updateCredit();
@@ -45,7 +45,7 @@ public class Player extends Person
 		return this.betAmount;
 	}
 	
-	public PlayerWindow getPlayerWindow()
+	public PlayerPanel getPlayerWindow()
 	{
 		return this.playerWindow;
 	}

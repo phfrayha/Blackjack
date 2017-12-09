@@ -16,7 +16,9 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -55,6 +57,8 @@ public class PlayerPanel extends JPanel {
 	private JButton hitButton;
 	private JButton standButton;
 	private JTextField currentCreditField;
+	
+	private JFrame parentFrame;
 	
 	private Hand playerCards;
 	
@@ -129,6 +133,12 @@ public class PlayerPanel extends JPanel {
 		dummyPanel.add(creditPanel);
 				
 		this.add(dummyPanel);
+		
+		parentFrame = new JFrame("Jogador " + (id + 1));
+		parentFrame.setVisible(true);
+		parentFrame.setSize(756, 600);
+		parentFrame.setResizable(false);
+		parentFrame.getContentPane().add(this);
 		
 		repaint();
 	}
@@ -299,7 +309,7 @@ public class PlayerPanel extends JPanel {
 		this.repaint();
 	}
 
-	public void updateCreditTextField(int currentCredit)
+	public void updateCredit(int currentCredit)
 	{
 		this.currentCreditField.setText(Integer.toString(currentCredit));
 	}
@@ -307,6 +317,12 @@ public class PlayerPanel extends JPanel {
 	public int getId()
 	{
 		return this.id;
+	}
+	
+	public void endPlayer()
+	{
+		JOptionPane.showMessageDialog(this, "Você faliu! A janela será fechada", "JOGADOR FALIU", JOptionPane.INFORMATION_MESSAGE);
+		this.parentFrame.dispose();
 	}
 	
 	private class PlayerChipClickListener implements MouseListener

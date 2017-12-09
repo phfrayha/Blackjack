@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import pedrofrayha.blackjack.actions.DealerButtonClickListener;
@@ -73,6 +74,13 @@ public class DealerPanel extends JPanel {
 		dummyBox.add(endGameButton);
 		
 		this.add(dummyBox, BorderLayout.SOUTH);
+		
+		JFrame parentFrame = new JFrame("Dealer");
+		parentFrame.setSize(850, 800);
+		parentFrame.getContentPane().add(this);
+		parentFrame.setVisible(true);
+		parentFrame.setResizable(false);
+		this.setVisible(true);
 		
 		repaint();
 	}
