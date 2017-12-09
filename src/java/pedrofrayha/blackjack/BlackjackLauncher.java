@@ -110,7 +110,14 @@ public class BlackjackLauncher {
 	
 	private static boolean havePlayersBeenCreated = false;
 	
-	private static void refreshUI()
+	private static boolean startNewRound;
+	
+	public static void startNewRound()
+	{
+		startNewRound = true;
+	}
+	
+	public static void refreshUI()
 	{
 		for(Player player : players)
 		{
@@ -134,9 +141,29 @@ public class BlackjackLauncher {
 				System.exit(1);
 			}
 		}
+		
+		startNewRound = true;
 				
 		while(!areAllPlayersBroke())
 		{
+			while(!startNewRound)
+			{
+				try 
+				{
+					Thread.sleep(1000);
+				} 
+				catch (InterruptedException e) 
+				{
+					System.out.println(e.getMessage());
+					System.exit(1);
+				}
+			}
+			dealer.disableStartNewRound();
+			for(Player player: players)
+			{
+				player.resetStatus();
+				player.updateCredit();
+			}
 			dealer.setUpDealer();
 			while(!haveAllPlayersBet())
 			{
@@ -154,52 +181,55 @@ public class BlackjackLauncher {
 			int counter = 0;
 			for(Player player: players)
 			{
+				dealer.setCurrentPlayer(counter);
 				playerHandValues[counter] = player.play();
 				counter++;
 			}
+			for(Player player: players)
+			{
+				player.setPreview(false);
+			}
 			final int dealerValue = dealer.play();
-			refreshUI();
 			final boolean dealerHasBlackJack = dealer.hasBlackJack();
 			final boolean hasDealerBust = dealer.hasBust();
 			
 			for(Player player: players)
 			{
-				final boolean hasPlayerBust = player.hasBust();
-				if(player.hasBlackJack())
+				if(!player.hasBust())
 				{
-					if(dealerHasBlackJack)
+					if(player.hasBlackJack())
 					{
-						player.addCredit(player.getBetAmount());
-					}
-					else
-					{
-						int payout = player.getBetAmount() / 2;
-						payout*=5;
-						player.addCredit(payout);
-					}
-				}
-				else if(hasDealerBust)
-				{
-					player.addCredit(2 * player.getBetAmount());
-				}
-				else if(!dealerHasBlackJack)
-				{
-						if(!hasPlayerBust)
+						if(dealerHasBlackJack)
 						{
-							if(playerHandValues[player.getPlayerID()] > dealerValue)
-							{
-								player.addCredit(2 * player.getBetAmount());
-							}
-							else if (playerHandValues[player.getPlayerID()] == dealerValue)
-							{
-								player.addCredit(player.getBetAmount());
-							}
+							player.addCredit(player.getBetAmount());
 						}
+						else
+						{
+							int payout = player.getBetAmount() / 2;
+							payout*=5;
+							player.addCredit(payout);
+						}
+					}
+					else if(hasDealerBust)
+					{
+						player.addCredit(2 * player.getBetAmount());
+					}
+					else if(!dealerHasBlackJack)
+					{	
+						if(playerHandValues[player.getPlayerID()] > dealerValue)
+						{
+							player.addCredit(2 * player.getBetAmount());
+						}
+						else if (playerHandValues[player.getPlayerID()] == dealerValue)
+						{
+							player.addCredit(player.getBetAmount());
+						}					
+					}
 				}
-				player.resetStatus();
-				player.updateCredit();
 			}
 			Deck.getInstance().shuffleCards();
+			startNewRound = false;
+			dealer.enableStartNewRound();
 		}
 		dealer.showEndGameMessage();
 	}
@@ -238,8 +268,12 @@ public class BlackjackLauncher {
 			{
 				throw new IOException("Tentou salvar estado três vezes e não conseguiu");
 			}
+			JOptionPane.showMessageDialog(dealer.getDealerFrame(), "Jogo salvo com sucesso!", "JOGO SALVO", JOptionPane.INFORMATION_MESSAGE);
 		}
-		JOptionPane.showMessageDialog(dealer.getDealerFrame(), "Jogo salvo com sucesso!", "JOGO SALVO", JOptionPane.INFORMATION_MESSAGE);
+		else
+		{
+			JOptionPane.showMessageDialog(dealer.getDealerFrame(), "Jogo nao foi salvo!", "SALVAMENTO CANCELADO", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 	
 	private static void initializePlayersAndDealer(int numberOfPlayers)

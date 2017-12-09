@@ -96,7 +96,7 @@ public class Player extends Person
 				e.printStackTrace();
 			}
 		}
-		this.playerWindow.toWaitingState(false);
+		this.playerWindow.toWaitingState();
 		return this.hand.getValue();
 	}
 	
@@ -171,7 +171,7 @@ public class Player extends Person
 		this.credit -= bet;
 		hasBet = true;
 		this.betAmount = bet;
-		this.playerWindow.toWaitingState(true);
+		this.playerWindow.toWaitingState();
 	}
 	
 	public void resetStatus()
@@ -179,6 +179,16 @@ public class Player extends Person
 		this.hasBet = false;
 		this.hasStood = false;
 		this.playerWindow.toBettingState();
+	}
+	
+	public void setPreview(boolean flag)
+	{
+		this.playerWindow.setPreview(flag);
+	}
+	
+	public void showDealerCards()
+	{
+		this.playerWindow.showDealerCards();
 	}
 	
 	public void saveState(Writer writer)

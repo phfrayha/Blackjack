@@ -48,14 +48,24 @@ public class PlayerWindow extends JFrame {
 		this.playerPanel.refresh();
 	}
 	
-	public void toWaitingState(boolean showDealerPreview)
+	public void setPreview(boolean flag)
 	{
-		this.playerPanel.toWaitingState(showDealerPreview);
+		this.playerPanel.setPreview(flag);
+	}
+	
+	public void toWaitingState()
+	{
+		this.playerPanel.toWaitingState();
 	}
 	
 	public void updateCredit(int credit)
 	{
 		this.playerPanel.updateCreditTextField(credit);
+	}
+	
+	public void showDealerCards()
+	{
+		this.playerPanel.showDealerCards();
 	}
 	
 	public void endPlayer()

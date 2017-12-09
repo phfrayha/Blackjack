@@ -25,6 +25,10 @@ public class DealerButtonClickListener implements ActionListener {
 				e1.printStackTrace();
 			}
 		}
+		else if(command.equalsIgnoreCase("NewRoundCommand"))
+		{
+			BlackjackLauncher.startNewRound();
+		}
 	}
 
 }

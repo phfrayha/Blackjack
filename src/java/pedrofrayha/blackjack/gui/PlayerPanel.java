@@ -2,6 +2,7 @@ package pedrofrayha.blackjack.gui;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -44,6 +45,8 @@ public class PlayerPanel extends JPanel {
 	private static final int DEALER_CARD_BASE_X_POSITION = 300;
 	private static final int DEALER_CARD_BASE_Y_POSITION = 200;
 	
+	private static final Font DEFAULT_FONT = new Font("TimesRoman", Font.PLAIN, 20);
+	
 	private int id;
 	
 	private JTextField currentBetAmountField;
@@ -52,10 +55,6 @@ public class PlayerPanel extends JPanel {
 	private JButton hitButton;
 	private JButton standButton;
 	private JTextField currentCreditField;
-//	private Box currentDealerScoreBox;
-//	private JTextField currentDealerScoreField;
-	private Box currentPlayerScoreBox;
-	private JTextField currentPlayerScoreField;
 	
 	private Hand playerCards;
 	
@@ -124,25 +123,12 @@ public class PlayerPanel extends JPanel {
 		creditPanel.add(currentCreditLabel);
 		creditPanel.add(currentCreditField);
 		
-		this.currentPlayerScoreField = new JTextField(10);
-		this.currentPlayerScoreField.setEditable(false);
-		JLabel currentPlayerScoreLabel = new JLabel("Valor da mão: ");
-		
-		this.currentPlayerScoreBox = Box.createHorizontalBox();
-		this.currentPlayerScoreBox.add(currentPlayerScoreLabel);
-		this.currentPlayerScoreBox.add(currentPlayerScoreField);
-		this.currentPlayerScoreBox.setBorder(BorderFactory.createLineBorder(Color.black));
-		this.currentPlayerScoreBox.setVisible(false);
-		
 		JPanel dummyPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		dummyPanel.add(playPanel);
 		dummyPanel.add(betPanel);
 		dummyPanel.add(creditPanel);
-		
+				
 		this.add(dummyPanel);
-		
-		this.add(this.currentPlayerScoreBox);
-		this.currentPlayerScoreBox.setBounds(PLAYER_CARD_BASE_X_POSITION, PLAYER_CARD_BASE_Y_POSITION + 80, 100, 40);
 		
 		repaint();
 	}
@@ -184,6 +170,9 @@ public class PlayerPanel extends JPanel {
 			Image chip100 = ImageIO.read(new File("./Imagens/ficha 100$.png"));
 			g.drawImage(chip100, CHIP_BASE_X_POSITION + 120, CHIP_BASE_Y_POSITION + 60, null);
 			
+			g.setColor(Color.WHITE);
+			g.setFont(DEFAULT_FONT);
+			
 			if(isPreview)
 			{
 				Image previewImage = ImageIO.read(new File("./Imagens/deck1.gif"));
@@ -211,13 +200,27 @@ public class PlayerPanel extends JPanel {
 			else
 			{
 				int rightShift = 0;
-				for(Card card: Dealer.getInstance().getHand().getCards())
+				Dealer dealer = Dealer.getInstance();
+				
+				while(dealer.getHand() == null)
+				{
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						System.out.println(e.getMessage());
+						System.exit(1);
+					}
+				}
+				
+				Hand dealerCards = dealer.getHand();
+				for(Card card: dealerCards.getCards())
 				{
 					final String imagePath = CardToImageConverter.convertToImagePath(card);
 					Image cardImage = ImageIO.read(new File(imagePath));
 					g.drawImage(cardImage, DEALER_CARD_BASE_X_POSITION + rightShift, DEALER_CARD_BASE_Y_POSITION, null);
 					rightShift += 30;
 				}
+				g.drawString("Pontuação da banca: " + dealerCards.getValue(), DEALER_CARD_BASE_X_POSITION - 40, DEALER_CARD_BASE_Y_POSITION + 120);
 			}
 			
 			if(playerCards != null)
@@ -230,8 +233,7 @@ public class PlayerPanel extends JPanel {
 					g.drawImage(cardImage, PLAYER_CARD_BASE_X_POSITION + rightShift, PLAYER_CARD_BASE_Y_POSITION, null);
 					rightShift += 30;
 				}
-				this.currentPlayerScoreBox.setVisible(true);
-				this.currentPlayerScoreField.setText(Integer.toString(playerCards.getValue()));
+				g.drawString("Pontuação da mão: " + playerCards.getValue(), PLAYER_CARD_BASE_X_POSITION - 40, PLAYER_CARD_BASE_Y_POSITION + 120);
 			}
 			
 		}
@@ -274,17 +276,26 @@ public class PlayerPanel extends JPanel {
 		this.resetBetAmount();
 		this.playerCards = null;
 		this.isPreview = true;
-		this.currentPlayerScoreBox.setVisible(false);
 		this.repaint();
 	}
 	
-	public void toWaitingState(boolean dealerHandPreview)
+	public void setPreview(boolean flag)
+	{
+		this.isPreview = flag;
+	}
+	
+	public void toWaitingState()
 	{
 		this.betButton.setEnabled(false);
 		this.resetBetButton.setEnabled(false);
 		this.hitButton.setEnabled(false);
 		this.standButton.setEnabled(false);
-		this.isPreview = dealerHandPreview;
+		this.repaint();
+	}
+	
+	public void showDealerCards()
+	{
+		this.isPreview = false;
 		this.repaint();
 	}
 

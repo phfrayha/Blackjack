@@ -2,6 +2,8 @@ package pedrofrayha.blackjack.gui;
 
 import javax.swing.JFrame;
 
+import pedrofrayha.blackjack.utils.Hand;
+
 public class DealerWindow extends JFrame {
 
 	/**
@@ -19,6 +21,26 @@ public class DealerWindow extends JFrame {
 		this.setVisible(true);
 		this.setResizable(false);
 		this.dealerPanel.setVisible(true);
+	}
+	
+	public void toPlayingState(Hand cards)
+	{
+		this.dealerPanel.toPlayingState(cards);
+	}
+	
+	public void showCurrentPlayer(int id)
+	{
+		this.dealerPanel.showCurrentPlayer(id);
+	}
+	
+	public void enableStartNewRound()
+	{
+		this.dealerPanel.enableStartNewRound();
+	}
+	
+	public void disableStartNewRound()
+	{
+		this.dealerPanel.disableStartNewRound();
 	}
 	
 	private void initializeDealerUI()

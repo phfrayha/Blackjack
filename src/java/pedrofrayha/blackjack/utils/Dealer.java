@@ -2,6 +2,7 @@ package pedrofrayha.blackjack.utils;
 
 import javax.swing.JOptionPane;
 
+import pedrofrayha.blackjack.BlackjackLauncher;
 import pedrofrayha.blackjack.gui.DealerWindow;
 
 public class Dealer extends Person{
@@ -14,9 +15,25 @@ public class Dealer extends Person{
 		this.dealerWindow = new DealerWindow();
 	}
 	
+	public void enableStartNewRound()
+	{
+		this.dealerWindow.enableStartNewRound();
+	}
+	
+	public void disableStartNewRound()
+	{
+		this.dealerWindow.disableStartNewRound();
+	}
+	
+	public void setCurrentPlayer(int id)
+	{
+		this.dealerWindow.showCurrentPlayer(id);
+	}
+	
 	public void setUpDealer()
 	{
 		this.hand = new Hand();
+		this.dealerWindow.toPlayingState(this.hand);
 	}
 	
 	public Card getPreviewCard()
@@ -26,10 +43,12 @@ public class Dealer extends Person{
 	
 	public int play()
 	{
+		setCurrentPlayer(-1);
 		Deck deck = Deck.getInstance();
 		while(hand.getValue() < 17)
 		{
 			hand.addCard(deck.drawCard());
+			BlackjackLauncher.refreshUI();
 		}
 		return hand.getValue();
 	}
